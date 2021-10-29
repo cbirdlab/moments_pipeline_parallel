@@ -102,13 +102,15 @@ import Models_2D
 #**************
 # snps = "/Users/portik/Dropbox/MOMENTS/moments_pipeline/Example_Data/moments_2pops_North_South_snps.txt"
 sfs = sys.argv[1]
+pop1 = sys.argv[2]
+pop2 = sys.argv[3]
 
 #Create python dictionary from snps file
 # dd = moments.Misc.make_data_dict(snps)
 
 #**************
 #pop_ids is a list which should match the populations headers of your SNPs file columns
-pop_ids=["Sekong", "Mekong"]
+pop_ids=[pop1, pop2]
 
 #**************
 #projection sizes, in ALLELES not individuals
