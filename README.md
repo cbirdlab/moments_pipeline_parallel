@@ -7,10 +7,13 @@ dportik's 2D moments script modified to accept a SFS as input and for paralleliz
 
 The strategy is to run all of the models and identify which one has the most support
 
-1. Make sfs with easySFS
+1. Make sfs with [easySFS](https://github.com/isaacovercast/easySFS)
 2. Make sure all dependencies are installed
-3. Make sure the proper anaconda environment is activated
-4. Run the following lines of code (modify variables as necessary)
+    * [moments](https://bitbucket.org/simongravel/moments/src/master/)
+    * [dportik moments_pipeline dependencies](https://github.com/dportik/moments_pipeline)
+    * gnu parallel
+4. Make sure the proper anaconda environment is activated
+5. Run the following lines of code (modify variables as necessary)
   ```bash
   THREADS=4
   sfsPATH=../../easySFS/pfalcifer/output_28_80/dadi/Sekong-Mekong.sfs
