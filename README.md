@@ -28,9 +28,17 @@ The strategy is to run all of the models and identify which one has the most sup
   POP2ID="pop2"
   ls moments_Run_2D_??_*py | parallel --no-notice -j $THREADS "python {} $sfsPATH $POP1ID $POP2ID"
   ```
+  The `screen` command is optional.  Duckduckgo it.  To detach from the screen, `ctrl+a`  then `d`
 
-The `screen` command is optional.  Duckduckgo it.  To detach from the screen, `ctrl+a`  then `d`
+5. When complete, run the following
+  ```bash
+  python Summarize_Outputs.py .
+  ```
+  The `.` indicates the output is in the present directory
 
+---
+
+## USER DEFINED VARIABLES
 ### THREADS
 
 set this to the number of cpu cores available / 8
