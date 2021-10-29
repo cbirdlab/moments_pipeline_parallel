@@ -7,13 +7,16 @@ dportik's 2D moments script modified to accept a SFS as input and for paralleliz
 
 The strategy is to run all of the models and identify which one has the most support
 
-1. Make sfs with easySFS
+1. Make sfs with [easySFS](https://github.com/isaacovercast/easySFS)
 	* get vcf and popmap
 	* convert popmap to the format required by easySFS (swap the columns)
 	* run the preview
 	* select the number of individuals
 	* make the sfs
 2. Make sure all dependencies are installed
+    * [moments](https://bitbucket.org/simongravel/moments/src/master/)
+    * [dportik moments_pipeline dependencies](https://github.com/dportik/moments_pipeline)
+    * gnu parallel
 3. Make sure the proper anaconda environment is activated
 4. Run the following lines of code (modify variables as necessary)
   ```bash
