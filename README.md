@@ -55,3 +55,11 @@ The name of population sample 1 used in the sfs
 
 The name of hte population sample 2 used in the sfs
 
+---
+
+## MODELS
+
+The models implemented are those from [Leache et al 2019](https://onlinelibrary.wiley.com/doi/10.1111/jbi.13716).  They can be visualized in Figure S1 [here](jbi13716-sup-0001-supinfo.pdf)
+
+![](Leache et al 2019 FigS1.PNG)
+
