@@ -67,7 +67,7 @@ The models implemented are those from [Leache et al 2019](https://onlinelibrary.
 
 ## OTHER USEFUL CITATIONS
 
-https://github.com/kfarleigh/Moments
+https://github.com/kfarleigh/Moments & https://onlinelibrary.wiley.com/doi/full/10.1111/mec.16070
 
 https://github.com/z0on/AFS-analysis-with-moments
 
