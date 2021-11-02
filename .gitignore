@@ -3,3 +3,4 @@
 .vcf*
 .fq*
 .fastq*
+output*/
