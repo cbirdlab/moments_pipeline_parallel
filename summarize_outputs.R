@@ -8,6 +8,8 @@ library(purrr)
 #### USER DEFINED VARIABLES ####
 indir <- "output_286_396"
 indir <- "output_88_88"
+indir <- "output_28_80"
+indir <- "output_54_158"
 
 #### LOAD VARIABLES ####
 file_names_optimized <- list.files(indir,
@@ -80,24 +82,45 @@ get_all_model_results <- function(inFILES){
            contains("optimized_params"))
 }
 
-#### WRANGLE DATA ####
+#### WRANGLE DATA OUTPUT ####
 data <-
   get_all_model_results(file_names_optimized)
 
-#### ####
-data %>%
-  filter(str_detect(replicate, 
-                    "Round_4")) %>% view()
+#### VISUALIZE DATA OUTPUT####
 
 data %>%
-  filter(str_detect(round, 
-                    "4"),
-         ! is.na(chi_squared) & chi_squared >= 0) %>%
+  filter(! is.na(chi_squared) & chi_squared >= 0,
+         round == "4") %>%
+  group_by(model) %>%
+  summarize(max_log_likelihood = max(log_likelihood,
+                                     na.rm=TRUE)) %>%
+  
   ggplot(aes(x = model,
-              y = log_likelihood)) +
+             y = max_log_likelihood,
+             fill = max_log_likelihood)) +
+  geom_col() +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
+
+data %>%
+  filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+  ggplot(aes(x = model,
+             y = log_likelihood)) +
   geom_boxplot() +
   theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  facet_grid(round ~ .,
+             scales ="free_y")
+
+data %>%
+  filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+  ggplot(aes(x = model,
+             y = theta)) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  facet_grid(round ~ .,
+             scales ="free_y")
 
 data %>%
   filter(! is.na(chi_squared) & chi_squared >= 0) %>%
@@ -108,7 +131,24 @@ data %>%
              y = n)) +
   geom_col() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-  facet_grid(round ~ .)
+  labs(y = "Number of Successful Replicates") +
+  facet_grid(round ~ .,
+             scales ="free_y")
+
+data %>%
+  filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+  group_by(model,
+           round) %>%
+  summarize(max_log_likelihood = max(log_likelihood,
+                                     na.rm=TRUE)) %>%
+  
+  ggplot(aes(y = round,
+             x = max_log_likelihood)) +
+  geom_col() +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  facet_grid(model ~ .,
+             scales ="free_y")
 
 #### BASIC CODE TO READ 1 FILE ####
 # # get param names
