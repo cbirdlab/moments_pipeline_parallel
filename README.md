@@ -13,6 +13,10 @@ The strategy is to run all of the models and identify which one has the most sup
 	* run the preview
 	* select the number of individuals
 	* make the sfs
+	```
+	easySFS.py -i file.vcf -p example_files/pops.txt --preview -a
+	easySFS.py -i file.vcf -p example_files/pops.txt -a --proj=10,10
+	```
 2. Make sure all dependencies are installed
     * [moments](https://bitbucket.org/simongravel/moments/src/master/)
     * [dportik moments_pipeline dependencies](https://github.com/dportik/moments_pipeline)
