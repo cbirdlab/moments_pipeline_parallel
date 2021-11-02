@@ -84,7 +84,9 @@ get_all_model_results <- function(inFILES){
 
 #### WRANGLE DATA OUTPUT ####
 data <-
-  get_all_model_results(file_names_optimized)
+  get_all_model_results(file_names_optimized) %>%
+  mutate(across(nu1:t3,
+                ~ as.numeric(.)))
 
 #### VISUALIZE DATA OUTPUT####
 
@@ -104,6 +106,34 @@ data %>%
 
 data %>%
   filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+  ggplot(aes(x = model,
+             y = log_likelihood)) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  facet_grid(round ~ .,
+             scales ="free_y")
+
+ll_cutoff <-
+  data %>%
+    filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+    mutate(model = factor(model)) %>%
+    filter(round == 4) %>%
+    group_by(model) %>%
+    mutate(median_ll = median(log_likelihood,
+                              na.rm=TRUE)) %>% 
+    pull(median_ll) %>%
+    unique() %>%
+    median()
+  
+data %>%
+  filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+  mutate(model = factor(model)) %>%
+  filter(round == 4) %>%
+  group_by(model) %>%
+  mutate(median_ll = median(log_likelihood,
+                        na.rm=TRUE)) %>% 
+  filter(median_ll > ll_cutoff) %>%
   ggplot(aes(x = model,
              y = log_likelihood)) +
   geom_boxplot() +
@@ -150,6 +180,30 @@ data %>%
   facet_grid(model ~ .,
              scales ="free_y")
 
+#### ####
+best_model = "sec_contact_asym_mig"
+all_na <- function(x) any(!is.na(x))
+
+data_best_model <- 
+  data %>%
+  filter(round == 4,
+         model == best_model) %>%
+  select_if(all_na)
+
+data_best_model %>%
+  pivot_longer(cols = theta:t2,
+               names_to = "parameter") %>%
+  group_by(parameter) %>%
+  mutate(median = median(value,
+                         na.rm=TRUE),
+         min = min(value,
+                   na.rm=TRUE),
+         max = max(value,
+                   na.rm=TRUE)) %>%
+  select(model, parameter, median, max, min) %>%
+  distinct()
+
+data_best_model
 #### BASIC CODE TO READ 1 FILE ####
 # # get param names
 # param_names <-
