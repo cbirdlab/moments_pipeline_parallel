@@ -73,7 +73,7 @@ The name of population sample 1 used in the sfs
 
 ### POP2ID
 
-The name of hte population sample 2 used in the sfs
+The name of the population sample 2 used in the sfs
 
 ---
 
