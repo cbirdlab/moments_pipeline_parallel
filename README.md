@@ -7,7 +7,11 @@ dportik's 2D moments script modified to accept a SFS as input and for paralleliz
 
 The strategy is to run all of the models and identify which one has the most support
 
-1. Make sfs with [easySFS](https://github.com/isaacovercast/easySFS)
+0. Clone this repo to your local computer
+	```
+	git clone 
+	```
+2. Make sfs with [easySFS](https://github.com/isaacovercast/easySFS)
 	* get vcf and popmap
 	* convert popmap to the format required by easySFS (swap the columns)
 	* run the preview
