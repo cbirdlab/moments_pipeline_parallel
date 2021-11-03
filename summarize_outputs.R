@@ -12,12 +12,13 @@ library(tidyverse)
 library(janitor)
 library(readr)
 library(purrr)
+library(ggbeeswarm)
 
 #### USER DEFINED VARIABLES ####
 indir <- "output_286_396"
 indir <- "output_88_88"
 indir <- "output_28_80"
-indir <- "output_54_158"
+indir <- "./2D_ml-search/output_54_158"
 
 #### LOAD VARIABLES ####
 file_names_optimized <- 
@@ -99,6 +100,7 @@ data <-
 
 #### VISUALIZE DATA OUTPUT####
 
+# maximum likelihood by model
 data %>%
   filter(! is.na(chi_squared) & chi_squared >= 0,
          round == "4") %>%
@@ -113,16 +115,41 @@ data %>%
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) 
 
+# maximum likelihood by model and round
 data %>%
   filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+  group_by(model,
+           round) %>%
+  summarize(max_log_likelihood = max(log_likelihood,
+                                     na.rm=TRUE)) %>%
+  
+  ggplot(aes(y = round,
+             x = max_log_likelihood,
+             fill = max_log_likelihood)) +
+  geom_col() +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  facet_grid(model ~ .,
+             scales ="free_y")
+
+# log likelihood by round and model
+data %>%
+  filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+  group_by(model,
+           round) %>%
+  mutate(median_ll = median(log_likelihood,
+                            na.rm=TRUE)) %>% 
+  
   ggplot(aes(x = model,
-             y = log_likelihood)) +
+             y = log_likelihood,
+             fill = median_ll)) +
   geom_boxplot() +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   facet_grid(round ~ .,
              scales ="free_y")
 
+# narrow down to above average models
 ll_cutoff <-
   data %>%
     filter(! is.na(chi_squared) & chi_squared >= 0) %>%
@@ -134,7 +161,8 @@ ll_cutoff <-
     pull(median_ll) %>%
     unique() %>%
     median()
-  
+
+# boxplot log likelihood by model, 4th round
 data %>%
   filter(! is.na(chi_squared) & chi_squared >= 0) %>%
   mutate(model = factor(model)) %>%
@@ -144,23 +172,54 @@ data %>%
                         na.rm=TRUE)) %>% 
   filter(median_ll > ll_cutoff) %>%
   ggplot(aes(x = model,
-             y = log_likelihood)) +
+             y = log_likelihood,
+             fill = median_ll)) +
   geom_boxplot() +
+  geom_beeswarm(color = "red") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   facet_grid(round ~ .,
              scales ="free_y")
 
+# aic of better performing models
 data %>%
   filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+  mutate(model = factor(model)) %>%
+  filter(round == 4) %>%
+  group_by(model) %>%
+  mutate(median_ll = median(log_likelihood,
+                            na.rm=TRUE)) %>% 
+  filter(median_ll > ll_cutoff) %>%  
   ggplot(aes(x = model,
-             y = theta)) +
+             y = aic,
+             fill = median_ll)) +
   geom_boxplot() +
+  geom_beeswarm(color = "red") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   facet_grid(round ~ .,
              scales ="free_y")
 
+# theta of better performing models
+data %>%
+  filter(! is.na(chi_squared) & chi_squared >= 0) %>%
+  mutate(model = factor(model)) %>%
+  filter(round == 4) %>%
+  group_by(model) %>%
+  mutate(median_ll = median(log_likelihood,
+                            na.rm=TRUE)) %>% 
+  filter(median_ll > ll_cutoff) %>%  
+  ggplot(aes(x = model,
+             y = theta,
+             fill = median_ll)) +
+  geom_boxplot() +
+  geom_beeswarm(color = "red") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  facet_grid(round ~ .,
+             scales ="free_y")
+
+# missingness
 data %>%
   filter(! is.na(chi_squared) & chi_squared >= 0) %>%
   group_by(model,
@@ -174,21 +233,6 @@ data %>%
   facet_grid(round ~ .,
              scales ="free_y")
 
-data %>%
-  filter(! is.na(chi_squared) & chi_squared >= 0) %>%
-  group_by(model,
-           round) %>%
-  summarize(max_log_likelihood = max(log_likelihood,
-                                     na.rm=TRUE)) %>%
-  
-  ggplot(aes(y = round,
-             x = max_log_likelihood)) +
-  geom_col() +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-  facet_grid(model ~ .,
-             scales ="free_y")
-
 #### ####
 best_model = "sec_contact_asym_mig"
 all_na <- function(x) any(!is.na(x))
@@ -197,7 +241,21 @@ data_best_model <-
   data %>%
   filter(round == 4,
          model == best_model) %>%
-  select_if(all_na)
+  select_if(all_na) 
+
+# plots of parameter estimates
+data_best_model %>%
+  pivot_longer(cols = theta:t2,
+               names_to = "parameter") %>%
+  group_by(parameter) %>%
+  ggplot(aes(x=parameter,
+             y=value)) +
+  geom_boxplot() +
+  geom_beeswarm(aes(color = log_likelihood)) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  facet_wrap(. ~ parameter,
+             scales ="free_y")
 
 data_best_model %>%
   pivot_longer(cols = theta:t2,
@@ -213,6 +271,9 @@ data_best_model %>%
   distinct()
 
 data_best_model
+
+
+
 #### BASIC CODE TO READ 1 FILE ####
 # # get param names
 # param_names <-
