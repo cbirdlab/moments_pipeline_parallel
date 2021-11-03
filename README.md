@@ -10,8 +10,8 @@ The strategy is to run all of the models and identify which one has the most sup
 0. Clone this repo to your local computer
 	```
 	git clone https://github.com/cbirdlab/moments_pipeline_parallel.git
-	cd moments_pipeline_parallel/Two_Population_Pipeline_MaxLikelihood
 	```
+	
 2. Make sfs with [easySFS](https://github.com/isaacovercast/easySFS)
 	* get vcf and popmap
 	* convert popmap to the format required by easySFS (swap the columns)
@@ -22,27 +22,33 @@ The strategy is to run all of the models and identify which one has the most sup
 	easySFS.py -i file.vcf -p example_files/pops.txt --preview -a
 	easySFS.py -i file.vcf -p example_files/pops.txt -a --proj=10,10
 	```
+	
 2. Make sure all dependencies are installed
     * [moments](https://bitbucket.org/simongravel/moments/src/master/)
     * [dportik moments_pipeline dependencies](https://github.com/dportik/moments_pipeline)
     * gnu parallel
-3. Make sure the proper anaconda environment is activated
+
+3. Make sure the proper anaconda environment is activated and you are in the correct directory in the repo
+	```bash
+	cd moments_pipeline_parallel/Two_Population_Pipeline_MaxLikelihood
+	```
+
 4. Run the following lines of code (modify variables as necessary)
-  ```bash
-  screen -S moments2D
-  #deactivate any undesired python envs
-  THREADS=4
-  sfsPATH=../../easySFS/pfalcifer/output_28_80/dadi/Sekong-Mekong.sfs
-  POP1ID="pop1"
-  POP2ID="pop2"
-  ls moments_Run_2D_??_*py | parallel --no-notice -j $THREADS "python {} $sfsPATH $POP1ID $POP2ID"
-  ```
+	```bash
+	screen -S moments2D
+	#deactivate any undesired python envs
+	THREADS=4
+	sfsPATH=../../easySFS/pfalcifer/output_28_80/dadi/Sekong-Mekong.sfs
+	POP1ID="pop1"
+	POP2ID="pop2"
+	ls moments_Run_2D_??_*py | parallel --no-notice -j $THREADS "python {} $sfsPATH $POP1ID $POP2ID"
+	```
   The `screen` command is optional.  Duckduckgo it.  To detach from the screen, `ctrl+a`  then `d`
 
 5. When complete, run the following
-  ```bash
-  python Summarize_Outputs.py .
-  ```
+	```bash
+	python Summarize_Outputs.py .
+	```
   The `.` indicates the output is in the present directory
 
 ---
