@@ -255,7 +255,7 @@ data_best_model %>%
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   facet_wrap(. ~ parameter,
-             scales ="free_y")
+             scales ="free")
 
 data_best_model %>%
   pivot_longer(cols = theta:t2,
