@@ -30,6 +30,8 @@ The strategy is to run all of the models and identify which one has the most sup
 
 3. Make sure the proper anaconda environment is activated and you are in the correct directory in the repo
 	```bash
+	# deactivate unwanted environments
+	# conda activate InsertNameOfEnvironmentHereIfNecessary
 	cd moments_pipeline_parallel/Two_Population_Pipeline_MaxLikelihood
 	```
 
@@ -37,19 +39,22 @@ The strategy is to run all of the models and identify which one has the most sup
 	```bash
 	screen -S moments2D
 	#deactivate any undesired python envs
-	THREADS=4
-	sfsPATH=../../easySFS/pfalcifer/output_28_80/dadi/Sekong-Mekong.sfs
+	THREADS=4 
+	sfsPATH=../../easySFS/output_28_80/dadi/pop1-pop2.sfs
 	POP1ID="pop1"
 	POP2ID="pop2"
 	ls moments_Run_2D_??_*py | parallel --no-notice -j $THREADS "python {} $sfsPATH $POP1ID $POP2ID"
 	```
-  The `screen` command is optional.  Duckduckgo it.  To detach from the screen, `ctrl+a`  then `d`
+ _The `screen` command is optional.  Duckduckgo it.  To detach from the screen, `ctrl+a`  then `d` _
 
-5. When complete, run the following
+5. When complete, run `Summarize_Outputs.py` 
 	```bash
 	python Summarize_Outputs.py .
 	```
   The `.` indicates the output is in the present directory
+  
+6. You can interface with all raw model output files directly using `summarize_outputs.R` in R Studio
+
 
 ---
 
