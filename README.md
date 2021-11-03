@@ -32,7 +32,7 @@ The strategy is to run all of the models and identify which one has the most sup
 	```bash
 	# deactivate unwanted environments
 	# conda activate InsertNameOfEnvironmentHereIfNecessary
-	cd moments_pipeline_parallel/Two_Population_Pipeline_MaxLikelihood
+	cd moments_pipeline_parallel/2D_ml-search
 	```
 
 4. Run the following lines of code (modify variables as necessary)
