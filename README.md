@@ -3,13 +3,14 @@ dportik's 2D moments script modified to accept a SFS as input and for paralleliz
 
 ---
 
-## USAGE
+## USAGE: Find most likely model of demographic history
 
 The strategy is to run all of the models and identify which one has the most support
 
 0. Clone this repo to your local computer
 	```
-	git clone 
+	git clone https://github.com/cbirdlab/moments_pipeline_parallel.git
+	cd moments_pipeline_parallel/Two_Population_Pipeline_MaxLikelihood
 	```
 2. Make sfs with [easySFS](https://github.com/isaacovercast/easySFS)
 	* get vcf and popmap
