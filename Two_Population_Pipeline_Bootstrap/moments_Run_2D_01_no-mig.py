@@ -99,35 +99,47 @@ import Models_2D
 # Import data to create joint-site frequency spectrum
 #===========================================================================
 
-#**************
 # snps = "/Users/portik/Dropbox/MOMENTS/moments_pipeline/Example_Data/moments_2pops_North_South_snps.txt"
-sfs = sys.argv[1]
-pop1 = sys.argv[2]
-pop2 = sys.argv[3]
+dnaFile = sys.argv[1]
+dnaFileType = sys.argv[2]  #sfs, vcf, snp
+popFile = sys.argv[3]
+pop1 = sys.argv[4]
+pop2 = sys.argv[5]
+proj1 = sys.argv[6]
+proj2 = sys.argv[7]
+numBS = sys.argv[8]
 
-#Create python dictionary from snps file
-# dd = moments.Misc.make_data_dict(snps)
-
-#**************
 #pop_ids is a list which should match the populations headers of your SNPs file columns
 pop_ids=[pop1, pop2]
 
-#**************
 #projection sizes, in ALLELES not individuals
-# proj = [16, 32]
+proj = [proj1, proj1]
 
-#Convert this dictionary into folded AFS object
-#[polarized = False] creates folded spectrum object
-# fs = moments.Spectrum.from_data_dict(dd, pop_ids=pop_ids, projections = proj, polarized = False)
-fs = moments.Spectrum.from_file(sfs)
+if dnaFileType == 'snp':
+	#Create python dictionary from snps file
+	dd = moments.Misc.make_data_dict(dnaFile)
+	#Convert this dictionary into folded AFS object
+	#[polarized = False] creates folded spectrum object
+	fs = moments.Spectrum.from_data_dict(dd, pop_ids=pop_ids, projections = proj, polarized = False)
+elif dnaFileType == 'vcf':
+	dd = moments.Misc.make_data_dict_vcf(dnaFile, popFile)
+	fs = moments.Spectrum.from_data_dict(dd, pop_ids=pop_ids, projections = proj, polarized = False)
+elif dnaFileType == 'sfs':
+	fs = moments.Spectrum.from_file(dnaFile)
 
 #print some useful information about the afs or jsfs
 print("\n\n============================================================================")
 print("\nData for site frequency spectrum\n")
-# print("Projection: {}".format(proj))
+print("Projection: {}".format(proj))
 print("Sample sizes: {}".format(fs.sample_sizes))
 print("Sum of SFS: {}".format(numpy.around(fs.S(), 2)))
 print("\n============================================================================\n")
+
+#================================================================================
+# Bootstrap the SFS
+#================================================================================
+
+bsSfs = moments.Misc.bootstrap(dd, pop_ids, proj, polarized=False, num_boots=numBS, save_dir=None)
 
 #================================================================================
 # Calling external 2D models from the Models_2D.py script
