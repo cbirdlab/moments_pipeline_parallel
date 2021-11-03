@@ -1,5 +1,13 @@
+# this script parses the raw output from the moments_pipeline_parallel max-likelihood search
+# this is presently intended to be run interactively in R studio
+# alt+o to collapse sections
+
+# you need to define the `indir` below, see line 14
+
 #### INITIALIZE ####
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+setwd(shorterExistingWorkDir)
 library(tidyverse)
 library(janitor)
 library(readr)
@@ -12,8 +20,9 @@ indir <- "output_28_80"
 indir <- "output_54_158"
 
 #### LOAD VARIABLES ####
-file_names_optimized <- list.files(indir,
-                         full.names=TRUE) %>%
+file_names_optimized <- 
+  list.files(indir,
+             full.names=TRUE) %>%
   tibble() %>%
   rename(file_name = 1) %>%
   filter(str_detect(file_name, 
