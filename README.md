@@ -20,7 +20,7 @@ The strategy is to run all of the models and identify which one has the most sup
 	* make the sfs
 	```
 	easySFS.py -i file.vcf -p example_files/pops.txt --preview -a
-	easySFS.py -i file.vcf -p example_files/pops.txt -a --proj=10,10
+	easySFS.py -i file.vcf -p example_files/pops.txt -o outputdirname -a --proj=10,10
 	```
 	
 2. Make sure all dependencies are installed
