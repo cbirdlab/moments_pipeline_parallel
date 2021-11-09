@@ -7,7 +7,6 @@
 #### INITIALIZE ####
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-setwd(shorterExistingWorkDir)
 library(tidyverse)
 library(janitor)
 library(readr)
@@ -18,7 +17,11 @@ library(ggbeeswarm)
 indir <- "output_286_396"
 indir <- "output_88_88"
 indir <- "output_28_80"
-indir <- "./2D_ml-search/output_54_158"
+indir <- "./output_linked_noOut_50_50"
+indir <- "./output_linked_noOut_adult_50_50/"
+indir <- "./output_linked_noOut_juv_50_50/"
+indir <- "./output_linked_noOut_adult_100_100/"
+
 
 #### LOAD VARIABLES ####
 file_names_optimized <- 
@@ -52,6 +55,7 @@ get_param_names <- function(inFILE){
 
 get_model_results <- function(inFILE){
   # data_summaries <-
+  inFILE
   param_names <- 
     get_param_names(inFILE) 
   
@@ -78,7 +82,11 @@ get_model_results <- function(inFILE){
                                          "Round_")),
            replicate = as_factor(replicate)) %>%
     arrange(model,
-            desc(log_likelihood)) 
+            desc(log_likelihood)) %>%
+    mutate(across(log_likelihood:theta,
+                  ~ as.numeric(.)),
+           across(starts_with("nu"),
+                  ~as.numeric(.)))
 }
 
 get_all_model_results <- function(inFILES){
@@ -101,9 +109,9 @@ data <-
 #### VISUALIZE DATA OUTPUT####
 
 # maximum likelihood by model
-data %>%
-  filter(! is.na(chi_squared) & chi_squared >= 0,
-         round == "4") %>%
+  data %>%
+    filter(! is.na(chi_squared) & chi_squared >= 0,
+           round == "4") %>%
   group_by(model) %>%
   summarize(max_log_likelihood = max(log_likelihood,
                                      na.rm=TRUE)) %>%
@@ -234,7 +242,7 @@ data %>%
              scales ="free_y")
 
 #### ####
-best_model = "sec_contact_asym_mig"
+best_model = "sym_mig_size"
 all_na <- function(x) any(!is.na(x))
 
 data_best_model <- 
@@ -252,6 +260,19 @@ data_best_model %>%
              y=value)) +
   geom_boxplot() +
   geom_beeswarm(aes(color = log_likelihood)) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  facet_wrap(. ~ parameter,
+             scales ="free")
+
+# histogram of parameter estimates
+data_best_model %>%
+  pivot_longer(cols = theta:t2,
+               names_to = "parameter") %>%
+  group_by(parameter) %>%
+  ggplot(aes(x=value)) +
+  geom_histogram() +
+  # geom_beeswarm(aes(color = log_likelihood)) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   facet_wrap(. ~ parameter,
